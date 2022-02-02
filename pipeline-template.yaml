@@ -12,7 +12,7 @@ objects:
     generateName: catapp-build-and-deploy-
     namespace: ${NAMESPACE}
   spec:
-    serviceAccountName: tekton-triggers-sa
+    serviceAccountName: pipeline
     pipelineRef:
       name: build-and-deploy-openshift
     resources:
