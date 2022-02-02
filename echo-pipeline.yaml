@@ -1,0 +1,44 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: echo-pipeline
+spec:
+  resources:
+    - name: source-repo
+      type: git
+  params:
+    - name: revision
+      type: string
+      description: "Merge request branch name"
+    - name: namespace
+      type: string
+      description: "OCP Namespace"
+  tasks:
+    # - name: delete-old-namespace
+    #   taskRef: 
+    #     name: openshift-client
+    #   params:
+    #     - name: SCRIPT
+    #       value: "oc delete project $(params.revision) --ignore-not-found=true --grace-period=1 --wait=true"
+    # - name: create-namespace
+    #   taskRef: 
+    #     name: openshift-client
+    #   params:
+    #     - name: SCRIPT
+    #       value: "oc new-project $(params.revision) --skip-config-write=true"
+    #   runAfter: 
+    #     - delete-old-namespace
+    - name: run-echo-task
+      taskRef: 
+        name: echoer
+      params:
+        - name: revision
+          value: "$(params.revision)"
+        - name: namespace
+          value: "$(params.namespace)"
+      resources:
+        inputs:
+          - name: source-repo
+            resource: source-repo
+      # runAfter: 
+      #   - create-namespace
